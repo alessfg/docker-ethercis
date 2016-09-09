@@ -37,8 +37,6 @@ Most applications will require the usage of both an EMPI and EHR server. This ca
 
 * EtherCIS is still in active development. If you encounter any issues please use the [EtherCIS issue tracker] (https://github.com/ethercis/ethercis/issues).
 
-## Startup 
-
 ## License
 
 * The EtherCIS platform is licensed under the Apache License. A copy of the license can be found in the [EtherCIS subfolder] (https://github.com/alessfg/docker-ethercis/tree/master/application/ethercis-1.1.0).
