@@ -10,7 +10,7 @@ Docker environment for [EtherCIS] (https://github.com/ethercis/ethercis), an ope
 
 ## Setup
 
-1. Install [Docker] (https://www.docker.com).
+1. Install the latest version of [Docker] (https://www.docker.com). Docker Compose version 2 is required.
 2. Clone the repository.
 3. Open a terminal in the directory where you cloned the repo.
 4. Run `docker-compose up`.
