@@ -41,5 +41,5 @@ RUN apt-get update && apt-get install -y \
 
 # Copy files required to initialise Postgres with the EtherCIS database schema
 COPY ./scripts ./scripts
-COPY ./01_db_creation.sh ./docker-entrypoint-initdb.d
-COPY ./02_db_init.sh ./docker-entrypoint-initdb.d
+COPY ./01_db_creation.sh ./docker-entrypoint-initdb.d/01_db_creation.sh
+COPY ./02_db_init.sh ./docker-entrypoint-initdb.d/02_db_init.sh
