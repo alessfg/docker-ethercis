@@ -33,6 +33,10 @@ Most applications will require the usage of both an EMPI and EHR server. This ca
 2. Download the docker-compose gist available [here] (https://gist.github.com/alessfg/f9c4f330850858b9afaea33de5595774) into the directory root.
 3. Run `docker-compose up`.
 
+## Deployment on IBM Bluemix
+
+Instructions on how to deploy the Docker environment on an IBM Bluemix server can be found in this issue: https://github.com/alessfg/docker-ethercis/issues/3
+
 ## Notes
 
 * EtherCIS is still in active development. If you encounter any issues please use the [EtherCIS issue tracker] (https://github.com/ethercis/ethercis/issues).
