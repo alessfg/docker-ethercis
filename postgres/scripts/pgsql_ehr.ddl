@@ -1,4 +1,4 @@
--- Generate EtherCIS tables for PostgreSQL 9.4
+-- Generate EtherCIS tables for PostgreSQL 9.3
 -- Author: Christian Chevalley
 --
 --
@@ -8,35 +8,31 @@
 --
 --    alter table com.ethercis.ehr.consult_req_attachement
 --        drop constraint FKC199A3AA4204581F;
--- Rev 1.1 2/8/16 CCH
 --
 drop schema if exists ehr cascade;
 -- drop schema if exists common cascade;
 
 create schema ehr;
 
-CREATE EXTENSION IF NOT EXISTS "temporal_tables" WITH SCHEMA ehr;
+CREATE EXTENSION IF NOT EXISTS temporal_tables WITH SCHEMA ehr;
 
-CREATE EXTENSION IF NOT EXISTS "ltree";
-
-CREATE EXTENSION IF NOT EXISTS "jsquery";
 -- required to be able to auto generate uuids
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA ehr;
+CREATE EXTENSION "uuid-ossp" WITH SCHEMA ehr;
 
 -- storeComposition schema common;
 
 
 -- storeComposition common_im entities
 -- CREATE TABLE "system" ---------------------------------------
-CREATE TABLE ehr.system (
+CREATE TABLE ehr.system ( 
 	id UUid PRIMARY KEY DEFAULT ehr.uuid_generate_v4(),
-	description Character Varying( 100 ) NOT NULL,
+	description Character Varying( 100 ) NOT NULL, 
 	settings Character Varying( 250 ) NOT NULL
  );
-
+ 
 COMMENT ON TABLE  ehr.system IS 'system table for reference';
 
-CREATE TABLE ehr.territory (
+CREATE TABLE ehr.territory ( 
 	code int unique primary key, -- numeric code
 	twoLetter char(2),
 	threeLetter char(3),
@@ -45,15 +41,15 @@ CREATE TABLE ehr.territory (
 
 COMMENT ON TABLE  ehr.territory IS 'ISO 3166-1 countries codeset';
 
-CREATE TABLE ehr.language (
-	code varchar(5) unique primary key,
+CREATE TABLE ehr.language ( 
+	code varchar(5) unique primary key, 
 	description Character Varying( 100 ) NOT NULL
  );
 
 COMMENT ON TABLE  ehr.language IS 'ISO 639-1 language codeset';
-
-CREATE TABLE ehr.terminology_provider (
-	code varchar(20) unique primary key,
+ 
+CREATE TABLE ehr.terminology_provider ( 
+	code varchar(20) unique primary key, 
 	source Character Varying( 100 ) NOT NULL,
 	authority varchar(50)
  );
@@ -62,7 +58,7 @@ COMMENT ON TABLE  ehr.terminology_provider IS 'openEHR identified terminology pr
 
 CREATE TABLE ehr.concept (
   id UUID unique primary key DEFAULT ehr.uuid_generate_v4(),
-	conceptID int,
+	conceptID int, 
 	language varchar(5) references ehr.language(code),
 	description varchar(250)
  );
@@ -96,9 +92,9 @@ create table ehr.access (
 	settings varchar(250),
 	scheme char(50) -- name of access control scheme
  );
-
+ 
 COMMENT ON TABLE ehr.access IS 'defines the modality for accessing an com.ethercis.ehr (security strategy implementation)';
---
+-- 
 
 -- storeComposition ehr_im entities
 -- EHR Class emr_im 4.7.1
@@ -304,6 +300,17 @@ create TABLE ehr.containment (
   path text
 );
 
+CREATE INDEX label_idx ON ehr.containment USING BTREE(label);
+CREATE INDEX comp_id_idx ON ehr.containment USING BTREE(comp_id);
+
+-- simple cross reference table to link INSTRUCTIONS with ACTIONS or other COMPOSITION
+CREATE TABLE ehr.compo_xref (
+  master_uuid UUID REFERENCES ehr.composition(id),
+  child_uuid UUID REFERENCES ehr.composition(id),
+  sys_transaction TIMESTAMP NOT NULL
+);
+CREATE INDEX ehr_compo_xref ON ehr.compo_xref USING BTREE (master_uuid);
+
 -- views to abstract querying
 -- EHR STATUS
 CREATE VIEW ehr.ehr_status AS
@@ -357,7 +364,23 @@ CREATE OR REPLACE VIEW ehr.comp_expand AS
     INNER JOIN ehr.status status ON status.ehr_id = ehr.id
     LEFT JOIN ehr.party_identified party ON status.party = party.id
     -- LEFT JOIN ehr.system sys ON ctx.setting = sys.id
-    LEFT JOIN ehr.party_identified fclty ON ctx.facility = fclty.id
+    LEFT JOIN ehr.party_identified fclty ON ctx.facility = fclty.id;
+
+--- CREATED INDEX
+CREATE INDEX label_idx ON ehr.containment USING GIST (label);
+CREATE INDEX comp_id_idx ON ehr.containment USING BTREE(comp_id);
+CREATE INDEX gin_entry_path_idx ON ehr.entry USING gin(entry jsonb_path_ops);
+CREATE INDEX template_entry_idx ON ehr.entry (template_id);
+
+-- to optimize comp_expand, index FK's
+CREATE INDEX entry_composition_id_idx ON ehr.entry (composition_id);
+CREATE INDEX composition_composer_idx ON ehr.composition (composer);
+CREATE INDEX composition_ehr_idx ON ehr.composition (ehr_id);
+CREATE INDEX status_ehr_idx ON ehr.status (ehr_id);
+CREATE INDEX status_party_idx ON ehr.status (party);
+CREATE INDEX context_facility_idx ON ehr.event_context (facility);
+CREATE INDEX context_composition_id_idx ON ehr.event_context (composition_id);
+CREATE INDEX context_setting_idx ON ehr.event_context (setting);
 
 
 -- AUDIT TRAIL has been replaced by CONTRIBUTION
@@ -371,3 +394,4 @@ CREATE OR REPLACE VIEW ehr.comp_expand AS
 --     serial_version VARCHAR(50),
 --     system_id UUID references ehr.system(id)
 -- );
+
