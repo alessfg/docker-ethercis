@@ -1,8 +1,8 @@
-FROM postgres:9.4
+FROM postgres:10.4
 
-MAINTAINER Alessandro Fael Garcia <alessfg@hotmail.com>
+MAINTAINER Alessandro Fael Garcia <alessfg@hotmail.com>, Shinji Kobayashi <skoba@moss.gr.jp>
 
-LABEL EtherCIS-Version="1.1.0" \
+LABEL EtherCIS-Version="1.2.0" \
       Description="Docker image for the EtherCIS database"
 
 # The following list of commands is executed in the same RUN block to
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 	flex \
 	gcc \
 	git \
-	postgresql-server-dev-9.4 \
+	postgresql-server-dev-10.4 \
 	make \
 # Install temporal tables extension
   && git clone https://github.com/arkhipov/temporal_tables \
@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y \
 	flex \
 	gcc \
 	git \
-	postgresql-server-dev-9.4 \
+	postgresql-server-dev-10.4 \
 	make \
 	&& apt-get autoremove -y
 
