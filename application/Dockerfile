@@ -1,8 +1,8 @@
 FROM java:8-jre
 
-MAINTAINER Alessandro Fael Garcia <alessfg@hotmail.com>
+MAINTAINER Alessandro Fael Garcia <alessfg@hotmail.com>, Shinji Kobayashi <skoba@moss.gr.jp>
 
-LABEL EtherCIS-Version="1.1.0" \
+LABEL EtherCIS-Version="1.2.0" \
       Description="Docker image for the EtherCIS application"
 
 # Create user and group ethercis
@@ -22,11 +22,11 @@ RUN chown -R ethercis:ethercis /home/ethercis/logs \
   && chown -R ethercis:ethercis /var/opt/ecis
 
 # Copy EtherCIS files into their corresponding directories
-COPY ./ethercis-1.1.0/conf /etc/opt/ecis
-COPY ./ethercis-1.1.0/bin /opt/ecis/bin
-COPY ./ethercis-1.1.0/lib/application /opt/ecis/lib/application
-COPY ./ethercis-1.1.0/lib/deploy /opt/ecis/lib/deploy
-COPY ./ethercis-1.1.0/lib/system /opt/ecis/lib/system
+COPY ./ethercis-1.2.0/conf /etc/opt/ecis
+COPY ./ethercis-1.2.0/bin /opt/ecis/bin
+COPY ./ethercis-1.2.0/lib/application /opt/ecis/lib/application
+COPY ./ethercis-1.2.0/lib/deploy /opt/ecis/lib/deploy
+COPY ./ethercis-1.2.0/lib/system /opt/ecis/lib/system
 COPY ./wait-for-it.sh /opt/ecis/bin/wait-for-it.sh
 
 # Make startup scripts executable

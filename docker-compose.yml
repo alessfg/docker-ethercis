@@ -19,3 +19,5 @@ services:
     build: ./postgres
     # Name image
     image: ethercis-db
+    ports:
+      - "2345:5432"
